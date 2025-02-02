@@ -139,7 +139,7 @@ def optimize_ichimoku(
     click.echo(f"\nTotal profit: {best_profit:.2%}")
 
     click.echo("\nBest parameters found")
-    click.echo(f"\tTenkan period: {best_params['tenkan']}")
-    click.echo(f"\tKijun period: {best_params['kijun']}")
-    click.echo(f"\tSenkou Span B period: {best_params['senkou_span_b']}")
-    click.echo(f"\tDisplacement: {best_params['displacement']}")
+    click.echo(f"  Tenkan period: {best_params['tenkan']}")
+    click.echo(f"  Kijun period: {best_params['kijun']}")
+    click.echo(f"  Senkou Span B period: {best_params['senkou_span_b']}")
+    click.echo(f"  Displacement: {best_params['displacement']}")
