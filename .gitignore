@@ -29,3 +29,5 @@ ENV/
 *.swo
 
 .vscode/settings.json
+
+.cache/

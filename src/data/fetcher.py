@@ -119,6 +119,7 @@ class DataFetcher:
         cache_path = self._get_cache_path(cache_key)
         with open(cache_path, "wb") as f:
             pickle.dump(df, f)
+            df.to_csv(self._get_cache_path(cache_key + ".csv"), index=False)
 
     def _load_from_cache(self, cache_key: str) -> Optional[pd.DataFrame]:
         """Load DataFrame from cache if it exists"""
