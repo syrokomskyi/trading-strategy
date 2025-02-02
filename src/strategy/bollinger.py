@@ -1,5 +1,4 @@
 import pandas as pd
-from typing import Dict, Any
 from .base import Strategy
 
 
