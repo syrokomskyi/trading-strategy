@@ -15,6 +15,9 @@ class Fetcher(ABC):
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(exist_ok=True)
 
+    def fetch_balance(self):
+        raise NotImplementedError()
+
     def fetch_retry(
         self,
         symbol: str,
