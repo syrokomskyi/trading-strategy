@@ -3,14 +3,21 @@ import pandas as pd
 import ccxt
 from typing import Optional
 import time
+import pickle
+from pathlib import Path
+from slugify import slugify
 
 
 class DataFetcher:
-    def __init__(self, exchange_id: str = "binance"):
+    def __init__(self, exchange_id: str = "binance", cache_dir: str = ".cache"):
         self.exchange = getattr(ccxt, exchange_id)()
         # Increase timeout values
         self.exchange.timeout = 30000  # 30 seconds
         self.exchange.enableRateLimit = True
+
+        # Cache settings
+        self.cache_dir = Path(cache_dir)
+        self.cache_dir.mkdir(exist_ok=True)
 
         # Configure exchange-specific options
         if exchange_id == "binance":
@@ -31,8 +38,15 @@ class DataFetcher:
         end_date: Optional[datetime] = None,
         max_retries: int = 3,
         retry_delay: int = 5,
+        use_cache: bool = True,
     ) -> pd.DataFrame:
-        """Fetch OHLCV data from the exchange"""
+        """Fetch OHLCV data from the exchange with caching support"""
+
+        if use_cache:
+            cache_key = self._get_cache_key(symbol, timeframe, start_date, end_date)
+            cached_data = self._load_from_cache(cache_key)
+            if cached_data is not None:
+                return cached_data
 
         # Convert dates to timestamps
         since = int(start_date.timestamp() * 1000) if start_date else None
@@ -64,6 +78,12 @@ class DataFetcher:
                 if end_date:
                     df = df[df.index <= pd.Timestamp(end_date)]
 
+                if use_cache:
+                    cache_key = self._get_cache_key(
+                        symbol, timeframe, start_date, end_date
+                    )
+                    self._save_to_cache(df, cache_key)
+
                 return df
 
             except (ccxt.NetworkError, ccxt.RequestTimeout) as e:
@@ -74,14 +94,39 @@ class DataFetcher:
                 )
                 time.sleep(retry_delay)
 
-    def _timeframe_to_ms(self, timeframe: str) -> int:
-        """Convert timeframe string to milliseconds"""
-        units = {
-            "m": 60 * 1000,
-            "h": 60 * 60 * 1000,
-            "d": 24 * 60 * 60 * 1000,
-        }
-        unit = timeframe[-1]
-        value = int(timeframe[:-1])
+    def _get_cache_key(
+        self,
+        symbol: str,
+        timeframe: str,
+        start_date: Optional[datetime],
+        end_date: Optional[datetime],
+    ) -> str:
+        """Generate a unique cache key for the given parameters"""
+        keys = [
+            symbol,
+            timeframe,
+            start_date.strftime("%Y%m%d") if start_date else "none",
+            end_date.strftime("%Y%m%d") if end_date else "none",
+        ]
+        return slugify("-".join(keys), separator="_")
 
-        return value * units[unit]
+    def _get_cache_path(self, cache_key: str) -> Path:
+        """Get the full path for a cache file"""
+        return self.cache_dir / f"{cache_key}.pkl"
+
+    def _save_to_cache(self, df: pd.DataFrame, cache_key: str):
+        """Save DataFrame to cache"""
+        cache_path = self._get_cache_path(cache_key)
+        with open(cache_path, "wb") as f:
+            pickle.dump(df, f)
+
+    def _load_from_cache(self, cache_key: str) -> Optional[pd.DataFrame]:
+        """Load DataFrame from cache if it exists"""
+        cache_path = self._get_cache_path(cache_key)
+        if cache_path.exists():
+            try:
+                with open(cache_path, "rb") as f:
+                    return pickle.load(f)
+            except (pickle.UnpicklingError, EOFError):
+                return None
+        return None
