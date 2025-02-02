@@ -134,16 +134,14 @@ def run(
     else:
         raise ValueError(f"Unknown strategy '{strategy}'.")
 
-    # Set data and generate signals
-    signals = st.generate_signals()
     metrics = st.get_performance_metrics()
 
     # Print results
     click.echo(f"\nStrategy: {strategy.upper()}")
     click.echo(f"Symbol: {symbol}")
     click.echo(f"Timeframe: {timeframe}")
-    click.echo(f"\nSignals:\n{signals}")
-    click.echo("\nPerformance metrics:")
+    click.echo(f"Count signals: {metrics['count_signals']}")
+    click.echo("\nPerformance metrics")
     click.echo(f"Total profit: {metrics['total_profit']:.2%}")
     click.echo(
         f"Profitable / Total trades: {metrics['profitable_trades']} / {metrics['total_trades']}"
