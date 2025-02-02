@@ -86,9 +86,8 @@ def optimize_ichimoku(
                         )
                         strategy.set_data(data)
 
-                        # Generate signals and calculate total profit
-                        signals = strategy.generate_signals()
-                        total_profit = signals["profit"].sum()
+                        metrics = strategy.get_performance_metrics()
+                        total_profit = metrics["total_profit"]
 
                         # Update best parameters if current combination is better
                         if total_profit > best_profit:
@@ -103,9 +102,11 @@ def optimize_ichimoku(
                         bar.update(1)
 
     click.echo("\nOptimization complete!")
+
+    click.echo(f"\nTotal profit: {best_profit:.2%}")
+
     click.echo("\nBest parameters found:")
     click.echo(f"Tenkan period: {best_params['tenkan_period']}")
     click.echo(f"Kijun period: {best_params['kijun_period']}")
     click.echo(f"Senkou Span B period: {best_params['senkou_span_b_period']}")
     click.echo(f"Displacement: {best_params['displacement']}")
-    click.echo(f"Total profit: {best_profit:.4f}")
