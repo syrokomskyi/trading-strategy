@@ -33,12 +33,9 @@ class DataFetcher:
         retry_delay: int = 5,
     ) -> pd.DataFrame:
         """Fetch OHLCV data from the exchange"""
-        # Convert timeframe to milliseconds for the exchange API
-        timeframe_ms = self._timeframe_to_ms(timeframe)
 
         # Convert dates to timestamps
         since = int(start_date.timestamp() * 1000) if start_date else None
-        until = int(end_date.timestamp() * 1000) if end_date else None
 
         # Add retry logic
         for attempt in range(max_retries):
