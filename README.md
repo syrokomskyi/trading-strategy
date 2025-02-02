@@ -35,13 +35,13 @@ Test trading strategies using the CLI:
 
 ```bash
 # Test MA Crossover strategy
-trading-strategy test --strategy ma-cross --symbol BTC/USDT --timeframe 1h
+trading-strategy run --strategy ma-cross --symbol BTC/USDT --timeframe 1h
 
 # Test RSI strategy with custom parameters
-trading-strategy test --strategy rsi --symbol ETH/USDT --timeframe 4h --rsi-period 14 --rsi-overbought 70 --rsi-oversold 30
+trading-strategy run --strategy rsi --symbol ETH/USDT --timeframe 4h --rsi-period 14 --rsi-overbought 70 --rsi-oversold 30
 
 # Backtest with specific date range
-trading-strategy test --strategy ma-cross --symbol BTC/USDT --timeframe 1d --start-date 2023-01-01 --end-date 2100-12-31
+trading-strategy run --strategy ma-cross --symbol BTC/USDT --timeframe 1d --start-date 2023-01-01 --end-date 2100-12-31
 ```
 
 ### Available options
