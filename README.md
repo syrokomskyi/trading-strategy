@@ -82,8 +82,18 @@ trading-strategy run --strategy ma-cross --symbol BTC/USDT --timeframe 1d --star
 
 ##### Optimize Ichimoku strategy parameters
 
+The optimization process uses parallel execution to efficiently search through parameter combinations.
+
+###### Basic optimization
+
 ```bash
 trading-strategy optimize-ichimoku --symbol BTC/USDT --timeframe 1d --start-date 2023-01-01 --end-date 2024-01-01
+```
+
+###### Optimization with specific number of worker processes
+
+```bash
+trading-strategy optimize-ichimoku --symbol BTC/USDT --timeframe 1d --start-date 2023-01-01 --end-date 2024-01-01 --workers 4
 ```
 
 ### Available options
@@ -129,13 +139,14 @@ Strategy-specific options:
 
 - `run`: Test a trading strategy with specified parameters
 
-- `optimize-ichimoku`: Find optimal parameters for the Ichimoku strategy using grid search
+- `optimize-ichimoku`: Find optimal parameters for the Ichimoku strategy using parallel grid search
   - Required options:
     - `--symbol`: Trading pair (e.g., BTC/USDT)
     - `--timeframe`: Candle timeframe (1m, 5m, 15m, 1h, 4h, 1d)
   - Optional options:
     - `--start-date`: Start date for optimization (YYYY-MM-DD)
     - `--end-date`: End date for optimization (YYYY-MM-DD)
+    - `--workers`: Number of worker processes for parallel execution (defaults to CPU count)
 
 ## Implemented Strategies
 
