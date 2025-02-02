@@ -177,11 +177,11 @@ def optimize_ichimoku(
     """Optimize Ichimoku Strategy parameters using grid search."""
     click.echo("Starting Ichimoku Strategy optimization...")
 
-    # Parameter ranges to test
-    tenkan_periods = range(7, 12)  # Default is 9
-    kijun_periods = range(22, 30)  # Default is 26
-    senkou_span_b_periods = range(48, 56)  # Default is 52
-    displacement_periods = range(20, 46)  # Default is 26, testing range 20-45
+    # Parameter ranges to test with steps to reduce iterations
+    tenkan_periods = range(5, 30 + 2, 2)
+    kijun_periods = range(20, 60 + 2, 2)
+    senkou_span_b_periods = range(40, 120 + 2, 2)
+    displacement_periods = range(20, 45 + 5, 5)
 
     # Initialize data fetcher
     fetcher = DataFetcher()
@@ -209,7 +209,18 @@ def optimize_ichimoku(
                 for senkou_span_b in senkou_span_b_periods:
                     for displacement in displacement_periods:
                         # Skip invalid combinations where periods overlap incorrectly
-                        if tenkan >= kijun or kijun >= senkou_span_b:
+                        if (
+                            tenkan >= kijun
+                            or kijun >= senkou_span_b
+                            or tenkan < 5  # Too small for meaningful averages
+                            or kijun
+                            < 2 * tenkan  # Kijun should be notably larger than Tenkan
+                            or senkou_span_b
+                            < 2 * kijun  # Senkou B should be notably larger than Kijun
+                            or displacement
+                            < kijun * 0.5  # Displacement shouldn't be too small
+                            or displacement > kijun * 1.5
+                        ):  # or too large relative to Kijun
                             bar.update(1)
                             continue
 
