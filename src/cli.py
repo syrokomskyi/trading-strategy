@@ -103,6 +103,15 @@ def run(
             period=bb_period,
             num_std=bb_std,
         )
+    elif strategy == "ichimoku":
+        s = IchimokuStrategy(
+            symbol=symbol,
+            timeframe=timeframe,
+            tenkan_period=tenkan_period,
+            kijun_period=kijun_period,
+            senkou_span_b_period=senkou_span_b_period,
+            displacement=displacement,
+        )
     elif strategy == "ma-cross":
         s = MovingAverageCrossStrategy(
             symbol=symbol,
@@ -117,15 +126,6 @@ def run(
             fast_period=fast_period,
             slow_period=slow_period,
             signal_period=signal_period,
-        )
-    elif strategy == "ichimoku":
-        s = IchimokuStrategy(
-            symbol=symbol,
-            timeframe=timeframe,
-            tenkan_period=tenkan_period,
-            kijun_period=kijun_period,
-            senkou_span_b_period=senkou_span_b_period,
-            displacement=displacement,
         )
     else:
         s = RSIStrategy(
@@ -181,6 +181,7 @@ def optimize_ichimoku(
     tenkan_periods = range(7, 12)  # Default is 9
     kijun_periods = range(22, 30)  # Default is 26
     senkou_span_b_periods = range(48, 56)  # Default is 52
+    displacement_periods = range(20, 46)  # Default is 26, testing range 20-45
 
     # Initialize data fetcher
     fetcher = DataFetcher()
@@ -194,7 +195,10 @@ def optimize_ichimoku(
     best_params = None
 
     total_combinations = (
-        len(tenkan_periods) * len(kijun_periods) * len(senkou_span_b_periods)
+        len(tenkan_periods)
+        * len(kijun_periods)
+        * len(senkou_span_b_periods)
+        * len(displacement_periods)
     )
     with click.progressbar(
         length=total_combinations, label="Testing combinations"
@@ -203,41 +207,45 @@ def optimize_ichimoku(
         for tenkan in tenkan_periods:
             for kijun in kijun_periods:
                 for senkou_span_b in senkou_span_b_periods:
-                    # Skip invalid combinations where periods overlap incorrectly
-                    if tenkan >= kijun or kijun >= senkou_span_b:
+                    for displacement in displacement_periods:
+                        # Skip invalid combinations where periods overlap incorrectly
+                        if tenkan >= kijun or kijun >= senkou_span_b:
+                            bar.update(1)
+                            continue
+
+                        # Create and test strategy with current parameters
+                        strategy = IchimokuStrategy(
+                            symbol=symbol,
+                            timeframe=timeframe,
+                            tenkan_period=tenkan,
+                            kijun_period=kijun,
+                            senkou_span_b_period=senkou_span_b,
+                            displacement=displacement,
+                        )
+                        strategy.set_data(data)
+
+                        # Generate signals and calculate total profit
+                        signals = strategy.generate_signals()
+                        total_profit = signals["profit"].sum()
+
+                        # Update best parameters if current combination is better
+                        if total_profit > best_profit:
+                            best_profit = total_profit
+                            best_params = {
+                                "tenkan_period": tenkan,
+                                "kijun_period": kijun,
+                                "senkou_span_b_period": senkou_span_b,
+                                "displacement": displacement,
+                            }
+
                         bar.update(1)
-                        continue
-
-                    # Create and test strategy with current parameters
-                    strategy = IchimokuStrategy(
-                        symbol=symbol,
-                        timeframe=timeframe,
-                        tenkan_period=tenkan,
-                        kijun_period=kijun,
-                        senkou_span_b_period=senkou_span_b,
-                    )
-                    strategy.set_data(data)
-
-                    # Generate signals and calculate total profit
-                    signals = strategy.generate_signals()
-                    total_profit = signals["profit"].sum()
-
-                    # Update best parameters if current combination is better
-                    if total_profit > best_profit:
-                        best_profit = total_profit
-                        best_params = {
-                            "tenkan_period": tenkan,
-                            "kijun_period": kijun,
-                            "senkou_span_b_period": senkou_span_b,
-                        }
-
-                    bar.update(1)
 
     click.echo("\nOptimization complete!")
     click.echo("\nBest parameters found:")
     click.echo(f"Tenkan period: {best_params['tenkan_period']}")
     click.echo(f"Kijun period: {best_params['kijun_period']}")
     click.echo(f"Senkou Span B period: {best_params['senkou_span_b_period']}")
+    click.echo(f"Displacement: {best_params['displacement']}")
     click.echo(f"Total profit: {best_profit:.4f}")
 
 
