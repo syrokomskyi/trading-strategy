@@ -120,7 +120,7 @@ def run(
             slow_period=slow_period,
             signal_period=signal_period,
         )
-    else:
+    elif strategy == "rsi":
         s = RSIStrategy(
             symbol=symbol,
             timeframe=timeframe,
@@ -128,6 +128,8 @@ def run(
             overbought=rsi_overbought,
             oversold=rsi_oversold,
         )
+    else:
+        raise ValueError(f"Unknown strategy '{strategy}'.")
 
     # Set data and generate signals
     s.set_data(data)
