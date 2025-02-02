@@ -2,7 +2,7 @@ import click
 from datetime import datetime
 from typing import Optional
 
-from ..fetcher.fetcher import Fetcher
+from ..fetcher.ccxt import CcxtFetcher
 from ..strategy.ichimoku import IchimokuStrategy
 
 
@@ -34,11 +34,9 @@ def optimize_ichimoku(
     senkou_span_b_periods = range(40, 120 + 2, 2)
     displacement_periods = range(20, 45 + 5, 5)
 
-    # Initialize data fetcher
-    fetcher = Fetcher()
-
     # Fetch historical data
-    data = fetcher.fetch_ohlcv(
+    fetcher = CcxtFetcher()
+    data = fetcher.fetch_retry(
         symbol=symbol, timeframe=timeframe, start_date=start_date, end_date=end_date
     )
 

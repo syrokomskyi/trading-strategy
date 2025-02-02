@@ -2,7 +2,7 @@ import click
 from datetime import datetime
 from typing import Optional
 
-from ..fetcher.fetcher import Fetcher
+from ..fetcher.ccxt import CcxtFetcher
 from ..strategy.bollinger import BollingerBandsStrategy
 from ..strategy.ma_cross import MovingAverageCrossStrategy
 from ..strategy.rsi import RSIStrategy
@@ -81,8 +81,8 @@ def run(
     """Test a trading strategy with historical data"""
 
     # Fetch historical data
-    fetcher = Fetcher()
-    data = fetcher.fetch_ohlcv(
+    fetcher = CcxtFetcher()
+    data = fetcher.fetch_retry(
         symbol=symbol, timeframe=timeframe, start_date=start_date, end_date=end_date
     )
 
@@ -141,6 +141,7 @@ def run(
     click.echo(f"Symbol: {symbol}")
     click.echo(f"Timeframe: {timeframe}")
     click.echo(f"Count signals: {metrics['count_signals']}")
+
     click.echo("\nPerformance metrics")
     click.echo(f"Total profit: {metrics['total_profit']:.2%}")
     click.echo(
