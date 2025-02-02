@@ -1,6 +1,7 @@
 import pandas as pd
 from ta.momentum import RSIIndicator
-from .base import Strategy
+
+from .strategy import Strategy
 
 
 class RSIStrategy(Strategy):

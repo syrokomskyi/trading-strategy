@@ -1,6 +1,7 @@
 import pandas as pd
 from ta.trend import MACD
-from .base import Strategy
+
+from .strategy import Strategy
 
 
 class MACDStrategy(Strategy):

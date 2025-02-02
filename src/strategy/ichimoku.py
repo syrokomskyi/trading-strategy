@@ -1,6 +1,7 @@
 import pandas as pd
 from ta.trend import IchimokuIndicator
-from .base import Strategy
+
+from .strategy import Strategy
 
 
 class IchimokuStrategy(Strategy):

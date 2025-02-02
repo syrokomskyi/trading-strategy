@@ -1,5 +1,6 @@
 import pandas as pd
-from .base import Strategy
+
+from .strategy import Strategy
 
 
 class BollingerBandsStrategy(Strategy):
