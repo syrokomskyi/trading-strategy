@@ -7,6 +7,7 @@ from .data.fetcher import DataFetcher
 from .strategy.bollinger import BollingerBandsStrategy
 from .strategy.ma_cross import MovingAverageCrossStrategy
 from .strategy.rsi import RSIStrategy
+from .strategy.macd import MACDStrategy
 
 
 @click.group()
@@ -18,7 +19,7 @@ def cli():
 @cli.command()
 @click.option(
     "--strategy",
-    type=click.Choice(["bb", "ma-cross", "rsi"]),
+    type=click.Choice(["bb", "ma-cross", "rsi", "macd"]),
     required=True,
     help="Trading strategy to test",
 )
@@ -39,9 +40,10 @@ def cli():
 @click.option("--bb-period", type=int, default=20, help="Bollinger Bands period")
 @click.option("--bb-std", type=float, default=2.0, help="Number of standard deviations")
 
-# MA Crossover specific options
-@click.option("--fast-period", type=int, default=10, help="Fast moving average period")
-@click.option("--slow-period", type=int, default=20, help="Slow moving average period")
+# MA Crossover and MACD specific options
+@click.option("--fast-period", type=int, default=12, help="Fast EMA period for MACD/MA-Cross")
+@click.option("--slow-period", type=int, default=26, help="Slow EMA period for MACD/MA-Cross")
+@click.option("--signal-period", type=int, default=9, help="Signal line period for MACD")
 
 # RSI specific options
 @click.option("--rsi-period", type=int, default=14, help="RSI calculation period")
@@ -57,6 +59,7 @@ def run(
     end_date: Optional[datetime],
     fast_period: int,
     slow_period: int,
+    signal_period: int,
     rsi_period: int,
     rsi_overbought: float,
     rsi_oversold: float,
@@ -87,6 +90,14 @@ def run(
             timeframe=timeframe,
             fast_period=fast_period,
             slow_period=slow_period,
+        )
+    elif strategy == "macd":
+        s = MACDStrategy(
+            symbol=symbol,
+            timeframe=timeframe,
+            fast_period=fast_period,
+            slow_period=slow_period,
+            signal_period=signal_period,
         )
     else:
         s = RSIStrategy(
