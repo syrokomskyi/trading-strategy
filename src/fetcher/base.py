@@ -9,7 +9,7 @@ from pathlib import Path
 from slugify import slugify
 
 
-class Fetcher(ABC):
+class Client(ABC):
     def __init__(self, exchange_id: str = "binance", cache_dir: str = ".cache"):
         # Cache settings
         self.cache_dir = Path(cache_dir)

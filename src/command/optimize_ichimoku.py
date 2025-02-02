@@ -5,7 +5,7 @@ from concurrent.futures import ProcessPoolExecutor
 import itertools
 from tqdm import tqdm
 
-from ..fetcher.ccxt import CcxtFetcher
+from ..fetcher.ccxt import CcxtClient
 from ..strategy.ichimoku import IchimokuStrategy
 
 
@@ -83,8 +83,8 @@ def optimize_ichimoku(
     displacement_periods = range(20, 45 + 5, 5)
 
     # Fetch historical data
-    fetcher = CcxtFetcher()
-    data = fetcher.fetch_retry(
+    client = CcxtClient()
+    data = client.fetch_retry(
         symbol=symbol, timeframe=timeframe, start_date=start_date, end_date=end_date
     )
 

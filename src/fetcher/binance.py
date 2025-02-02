@@ -3,10 +3,10 @@ from datetime import datetime
 import pandas as pd
 import ccxt
 from typing import Optional
-from .base import Fetcher
+from .base import Client
 
 
-class BinanceFetcher(Fetcher):
+class BinanceClient(Client):
     def __init__(
         self,
         api_key: str,

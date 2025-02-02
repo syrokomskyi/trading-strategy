@@ -2,10 +2,10 @@ from datetime import datetime
 import pandas as pd
 import ccxt
 from typing import Optional
-from .base import Fetcher
+from .base import Client
 
 
-class CcxtFetcher(Fetcher):
+class CcxtClient(Client):
     def __init__(self, exchange_id: str = "binance", cache_dir: str = ".cache"):
         super().__init__(exchange_id, cache_dir)
 
