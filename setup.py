@@ -16,7 +16,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "trading-strategy=src.cli:main",
+            "trading-strategy=src.cli:cli",
         ],
     },
     python_requires=">=3.11",
