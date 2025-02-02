@@ -32,6 +32,7 @@ class IchimokuStrategy(Strategy):
 
     def __init__(
         self,
+        data: pd.DataFrame,
         symbol: str,
         timeframe: str,
         tenkan_period: int = 9,
@@ -39,15 +40,13 @@ class IchimokuStrategy(Strategy):
         senkou_span_b_period: int = 52,
         displacement: int = 26,
     ):
-        super().__init__(symbol, timeframe)
+        super().__init__(data, symbol, timeframe)
         self.tenkan_period = tenkan_period
         self.kijun_period = kijun_period
         self.senkou_span_b_period = senkou_span_b_period
         self.displacement = displacement
 
     def generate_signals(self) -> pd.DataFrame:
-        if self.data is None:
-            raise ValueError("No data available. Call set_data() first.")
 
         # Calculate Ichimoku indicators
         ichimoku = IchimokuIndicator(
@@ -72,7 +71,7 @@ class IchimokuStrategy(Strategy):
         # Trading Rules:
         # 1. Price above Kumo (Senkou Span A & B)
         # 2. Tenkan-sen crosses above Kijun-sen
-        # 3. Chikou Span above price from 26 periods ago
+        # 3. Chikou Span above price from `kijun_period` ago
 
         # Bullish conditions
         bullish = (

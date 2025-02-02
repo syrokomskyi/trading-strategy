@@ -80,24 +80,24 @@ def run(
 ):
     """Test a trading strategy with historical data"""
 
-    # Initialize data fetcher
-    fetcher = DataFetcher()
-
     # Fetch historical data
+    fetcher = DataFetcher()
     data = fetcher.fetch_ohlcv(
         symbol=symbol, timeframe=timeframe, start_date=start_date, end_date=end_date
     )
 
     # Initialize strategy
     if strategy == "bb":
-        s = BollingerBandsStrategy(
+        st = BollingerBandsStrategy(
+            data=data,
             symbol=symbol,
             timeframe=timeframe,
             period=bb_period,
             num_std=bb_std,
         )
     elif strategy == "ichimoku":
-        s = IchimokuStrategy(
+        st = IchimokuStrategy(
+            data=data,
             symbol=symbol,
             timeframe=timeframe,
             tenkan_period=tenkan_period,
@@ -106,14 +106,16 @@ def run(
             displacement=displacement,
         )
     elif strategy == "ma-cross":
-        s = MovingAverageCrossStrategy(
+        st = MovingAverageCrossStrategy(
+            data=data,
             symbol=symbol,
             timeframe=timeframe,
             fast_period=fast_period,
             slow_period=slow_period,
         )
     elif strategy == "macd":
-        s = MACDStrategy(
+        st = MACDStrategy(
+            data=data,
             symbol=symbol,
             timeframe=timeframe,
             fast_period=fast_period,
@@ -121,7 +123,8 @@ def run(
             signal_period=signal_period,
         )
     elif strategy == "rsi":
-        s = RSIStrategy(
+        st = RSIStrategy(
+            data=data,
             symbol=symbol,
             timeframe=timeframe,
             period=rsi_period,
@@ -132,9 +135,8 @@ def run(
         raise ValueError(f"Unknown strategy '{strategy}'.")
 
     # Set data and generate signals
-    s.set_data(data)
-    signals = s.generate_signals()
-    metrics = s.get_performance_metrics()
+    signals = st.generate_signals()
+    metrics = st.get_performance_metrics()
 
     # Print results
     click.echo(f"\nStrategy: {strategy.upper()}")

@@ -77,6 +77,7 @@ def optimize_ichimoku(
 
                         # Create and test strategy with current parameters
                         strategy = IchimokuStrategy(
+                            data=data,
                             symbol=symbol,
                             timeframe=timeframe,
                             tenkan_period=tenkan,
@@ -84,7 +85,6 @@ def optimize_ichimoku(
                             senkou_span_b_period=senkou_span_b,
                             displacement=displacement,
                         )
-                        strategy.set_data(data)
 
                         metrics = strategy.get_performance_metrics()
                         total_profit = metrics["total_profit"]

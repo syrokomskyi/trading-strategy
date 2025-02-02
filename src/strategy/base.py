@@ -1,27 +1,21 @@
 from abc import ABC, abstractmethod
-from typing import Dict, Optional
+from typing import Dict
 import pandas as pd
 
 
 class Strategy(ABC):
-    def __init__(self, symbol: str, timeframe: str):
+    def __init__(self, data: pd.DataFrame, symbol: str, timeframe: str):
+        self.data = data
         self.symbol = symbol
         self.timeframe = timeframe
-        self.data: Optional[pd.DataFrame] = None
 
     @abstractmethod
     def generate_signals(self) -> pd.DataFrame:
         """Generate buy/sell signals based on the strategy logic"""
         pass
 
-    def set_data(self, data: pd.DataFrame):
-        """Set the price data for analysis"""
-        self.data = data
-
     def get_performance_metrics(self) -> Dict[str, float]:
         """Calculate strategy performance metrics"""
-        if self.data is None:
-            raise ValueError("No data available. Call set_data() first.")
 
         signals = self.generate_signals()
 

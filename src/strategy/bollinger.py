@@ -11,7 +11,12 @@ class BollingerBandsStrategy(Strategy):
     """
 
     def __init__(
-        self, symbol: str, timeframe: str, period: int = 20, num_std: float = 2.0
+        self,
+        data: pd.DataFrame,
+        symbol: str,
+        timeframe: str,
+        period: int = 20,
+        num_std: float = 2.0,
     ):
         """
         Initialize the strategy.
@@ -22,14 +27,12 @@ class BollingerBandsStrategy(Strategy):
             period: Period for moving average calculation
             num_std: Number of standard deviations for bands
         """
-        super().__init__(symbol, timeframe)
+        super().__init__(data, symbol, timeframe)
         self.period = period
         self.num_std = num_std
 
     def generate_signals(self) -> pd.DataFrame:
         """Generate trading signals based on Bollinger Bands."""
-        if self.data is None:
-            raise ValueError("Data not set. Call set_data() first.")
 
         # Calculate Bollinger Bands
         df = self.data.copy()

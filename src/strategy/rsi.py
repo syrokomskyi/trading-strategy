@@ -6,20 +6,19 @@ from .base import Strategy
 class RSIStrategy(Strategy):
     def __init__(
         self,
+        data: pd.DataFrame,
         symbol: str,
         timeframe: str,
         period: int = 14,
         overbought: float = 70,
         oversold: float = 30,
     ):
-        super().__init__(symbol, timeframe)
+        super().__init__(data, symbol, timeframe)
         self.period = period
         self.overbought = overbought
         self.oversold = oversold
 
     def generate_signals(self) -> pd.DataFrame:
-        if self.data is None:
-            raise ValueError("No data available. Call set_data() first.")
 
         # Calculate RSI
         rsi = RSIIndicator(close=self.data["close"], window=self.period).rsi()
