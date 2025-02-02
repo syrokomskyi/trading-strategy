@@ -3,11 +3,7 @@ from datetime import datetime
 from typing import Optional
 
 from ..fetcher.ccxt import CcxtFetcher
-from ..strategy.bollinger import BollingerBandsStrategy
-from ..strategy.ma_cross import MovingAverageCrossStrategy
-from ..strategy.rsi import RSIStrategy
-from ..strategy.macd import MACDStrategy
-from ..strategy.ichimoku import IchimokuStrategy
+from ..strategy.factory import StrategyFactory
 
 
 @click.command()
@@ -87,52 +83,24 @@ def run(
     )
 
     # Initialize strategy
-    if strategy == "bb":
-        st = BollingerBandsStrategy(
-            data=data,
-            symbol=symbol,
-            timeframe=timeframe,
-            period=bb_period,
-            num_std=bb_std,
-        )
-    elif strategy == "ichimoku":
-        st = IchimokuStrategy(
-            data=data,
-            symbol=symbol,
-            timeframe=timeframe,
-            tenkan_period=tenkan_period,
-            kijun_period=kijun_period,
-            senkou_span_b_period=senkou_span_b_period,
-            displacement=displacement,
-        )
-    elif strategy == "ma-cross":
-        st = MovingAverageCrossStrategy(
-            data=data,
-            symbol=symbol,
-            timeframe=timeframe,
-            fast_period=fast_period,
-            slow_period=slow_period,
-        )
-    elif strategy == "macd":
-        st = MACDStrategy(
-            data=data,
-            symbol=symbol,
-            timeframe=timeframe,
-            fast_period=fast_period,
-            slow_period=slow_period,
-            signal_period=signal_period,
-        )
-    elif strategy == "rsi":
-        st = RSIStrategy(
-            data=data,
-            symbol=symbol,
-            timeframe=timeframe,
-            period=rsi_period,
-            overbought=rsi_overbought,
-            oversold=rsi_oversold,
-        )
-    else:
-        raise ValueError(f"Unknown strategy '{strategy}'.")
+    st = StrategyFactory.build(
+        strategy=strategy,
+        data=data,
+        symbol=symbol,
+        timeframe=timeframe,
+        bb_period=bb_period,
+        bb_std=bb_std,
+        fast_period=fast_period,
+        slow_period=slow_period,
+        signal_period=signal_period,
+        rsi_period=rsi_period,
+        rsi_overbought=rsi_overbought,
+        rsi_oversold=rsi_oversold,
+        tenkan_period=tenkan_period,
+        kijun_period=kijun_period,
+        senkou_span_b_period=senkou_span_b_period,
+        displacement=displacement,
+    )
 
     metrics = st.get_performance_metrics()
 
@@ -143,9 +111,9 @@ def run(
     click.echo(f"Count signals: {metrics['count_signals']}")
 
     click.echo("\nPerformance metrics")
-    click.echo(f"Total profit: {metrics['total_profit']:.2%}")
+    click.echo(f"  Total profit: {metrics['total_profit']:.2%}")
     click.echo(
-        f"Profitable / Total trades: {metrics['profitable_trades']} / {metrics['total_trades']}"
+        f"  Profitable / Total trades: {metrics['profitable_trades']} / {metrics['total_trades']}"
     )
-    click.echo(f"Win rate: {metrics['win_rate']:.2%}")
-    click.echo(f"Max drawdown: {metrics['max_drawdown']:.2%}")
+    click.echo(f"  Win rate: {metrics['win_rate']:.2%}")
+    click.echo(f"  Max drawdown: {metrics['max_drawdown']:.2%}")
