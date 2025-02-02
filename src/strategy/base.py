@@ -38,7 +38,9 @@ class Strategy(ABC):
 
     def _calculate_max_drawdown(self, signals: pd.DataFrame) -> float:
         """Calculate maximum drawdown from equity curve"""
+
         cumulative = (1 + signals["profit"]).cumprod()
         rolling_max = cumulative.expanding().max()
         drawdowns = cumulative / rolling_max - 1
+
         return abs(drawdowns.min())
