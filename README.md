@@ -5,10 +5,13 @@ A command-line tool for testing various cryptocurrency trading strategies using 
 ## Features
 
 - 📈 Multiple trading strategies support
+
   - Bollinger Bands Strategy
+  - Ichimoku Strategy
   - MACD (Moving Average Convergence Divergence) Strategy
   - Moving Average Crossover Strategy
   - RSI (Relative Strength Index) Strategy
+
 - 💹 Real-time and historical data from multiple exchanges
 - 📊 Performance metrics calculation
 - ⚙️ Configurable strategy parameters
@@ -39,14 +42,17 @@ Test trading strategies using the CLI:
 # Test MA Crossover strategy
 trading-strategy run --strategy ma-cross --symbol BTC/USDT --timeframe 1h
 
-# Test MACD strategy
+# Bollinger Bands strategy
+trading-strategy run --strategy bb --symbol BTC/USDT --timeframe 1h --bb-period 20 --bb-std 2.0
+
+# Ichimoku strategy
+trading-strategy run --strategy ichimoku --symbol BTC/USDT --timeframe 4h --tenkan-period 9 --kijun-period 26 --senkou-b-period 52 --displacement 26
+
+# MACD strategy
 trading-strategy run --strategy macd --symbol BTC/USDT --timeframe 4h --fast-period 12 --slow-period 26 --signal-period 9
 
-# Test RSI strategy with custom parameters
+# RSI strategy with custom parameters
 trading-strategy run --strategy rsi --symbol ETH/USDT --timeframe 4h --rsi-period 14 --rsi-overbought 70 --rsi-oversold 30
-
-# Test Bollinger Bands strategy
-trading-strategy run --strategy bb --symbol BTC/USDT --timeframe 1h --bb-period 20 --bb-std 2.0
 
 # Backtest with specific date range
 trading-strategy run --strategy ma-cross --symbol BTC/USDT --timeframe 1d --start-date 2023-01-01 --end-date 2100-12-31
@@ -54,7 +60,7 @@ trading-strategy run --strategy ma-cross --symbol BTC/USDT --timeframe 1d --star
 
 ### Available options
 
-- `--strategy`: Trading strategy to test (ma-cross, rsi, bb, macd)
+- `--strategy`: Trading strategy to test (ma-cross, rsi, bb, macd, ichimoku)
 - `--symbol`: Trading pair (e.g., BTC/USDT, ETH/USDT)
 - `--timeframe`: Candle timeframe (1m, 5m, 15m, 1h, 4h, 1d)
 - `--start-date`: Start date for backtesting (YYYY-MM-DD)
@@ -66,6 +72,13 @@ Strategy-specific options:
 
   - `--bb-period`: Period for moving average calculation (default: 20)
   - `--bb-std`: Number of standard deviations for bands (default: 2.0)
+
+- Ichimoku Cloud:
+
+  - `--tenkan-period`: Period for Tenkan-sen (Conversion Line) calculation (default: 9)
+  - `--kijun-period`: Period for Kijun-sen (Base Line) calculation (default: 26)
+  - `--senkou-b-period`: Period for Senkou Span B calculation (default: 52)
+  - `--displacement`: Displacement period for Chikou Span and Kumo (default: 26)
 
 - MA Crossover:
 
@@ -79,6 +92,7 @@ Strategy-specific options:
   - `--signal-period`: Signal line period (default: 9)
 
 - RSI:
+
   - `--rsi-period`: RSI calculation period (default: 14)
   - `--rsi-overbought`: Overbought threshold (default: 70)
   - `--rsi-oversold`: Oversold threshold (default: 30)
@@ -120,6 +134,13 @@ The MACD is calculated using three moving averages:
 - Signal line (default: 9 periods)
 
 This strategy is particularly effective for identifying trend changes and momentum shifts in the market.
+
+### Ichimoku Cloud
+
+This strategy uses the Ichimoku Cloud system to identify trend direction and support/resistance levels:
+
+- Buy when price is above the cloud and Tenkan-sen is above Kijun-sen
+- Sell when price is below the cloud and Tenkan-sen is below Kijun-sen
 
 ## Contributing
 

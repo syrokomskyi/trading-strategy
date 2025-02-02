@@ -8,6 +8,7 @@ from .strategy.bollinger import BollingerBandsStrategy
 from .strategy.ma_cross import MovingAverageCrossStrategy
 from .strategy.rsi import RSIStrategy
 from .strategy.macd import MACDStrategy
+from .strategy.ichimoku import IchimokuStrategy
 
 
 @click.group()
@@ -19,7 +20,7 @@ def cli():
 @cli.command()
 @click.option(
     "--strategy",
-    type=click.Choice(["bb", "ma-cross", "rsi", "macd"]),
+    type=click.Choice(["bb", "ma-cross", "rsi", "macd", "ichimoku"]),
     required=True,
     help="Trading strategy to test",
 )
@@ -41,9 +42,15 @@ def cli():
 @click.option("--bb-std", type=float, default=2.0, help="Number of standard deviations")
 
 # MA Crossover and MACD specific options
-@click.option("--fast-period", type=int, default=12, help="Fast EMA period for MACD/MA-Cross")
-@click.option("--slow-period", type=int, default=26, help="Slow EMA period for MACD/MA-Cross")
-@click.option("--signal-period", type=int, default=9, help="Signal line period for MACD")
+@click.option(
+    "--fast-period", type=int, default=12, help="Fast EMA period for MACD/MA-Cross"
+)
+@click.option(
+    "--slow-period", type=int, default=26, help="Slow EMA period for MACD/MA-Cross"
+)
+@click.option(
+    "--signal-period", type=int, default=9, help="Signal line period for MACD"
+)
 
 # RSI specific options
 @click.option("--rsi-period", type=int, default=14, help="RSI calculation period")
@@ -51,20 +58,30 @@ def cli():
     "--rsi-overbought", type=float, default=70, help="RSI overbought threshold"
 )
 @click.option("--rsi-oversold", type=float, default=30, help="RSI oversold threshold")
+
+# Ichimoku specific options
+@click.option("--tenkan-period", type=int, default=9, help="Tenkan-sen period")
+@click.option("--kijun-period", type=int, default=26, help="Kijun-sen period")
+@click.option("--senkou-b-period", type=int, default=52, help="Senkou Span B period")
+@click.option("--displacement", type=int, default=26, help="Displacement period")
 def run(
     strategy: str,
     symbol: str,
     timeframe: str,
     start_date: Optional[datetime],
     end_date: Optional[datetime],
+    bb_period: int,
+    bb_std: float,
     fast_period: int,
     slow_period: int,
     signal_period: int,
     rsi_period: int,
     rsi_overbought: float,
     rsi_oversold: float,
-    bb_period: int,
-    bb_std: float,
+    tenkan_period: int,
+    kijun_period: int,
+    senkou_b_period: int,
+    displacement: int,
 ):
     """Test a trading strategy with historical data"""
 
@@ -98,6 +115,15 @@ def run(
             fast_period=fast_period,
             slow_period=slow_period,
             signal_period=signal_period,
+        )
+    elif strategy == "ichimoku":
+        s = IchimokuStrategy(
+            symbol=symbol,
+            timeframe=timeframe,
+            tenkan_period=tenkan_period,
+            kijun_period=kijun_period,
+            senkou_b_period=senkou_b_period,
+            displacement=displacement,
         )
     else:
         s = RSIStrategy(
