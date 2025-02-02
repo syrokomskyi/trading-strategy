@@ -1,11 +1,10 @@
 import click
 from datetime import datetime
-from pathlib import Path
 from typing import Optional
 
 from .data.fetcher import DataFetcher
-from .strategies.ma_cross import MovingAverageCrossStrategy
-from .strategies.rsi import RSIStrategy
+from .strategy.ma_cross import MovingAverageCrossStrategy
+from .strategy.rsi import RSIStrategy
 
 
 @click.group()
