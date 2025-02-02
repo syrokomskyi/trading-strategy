@@ -3,7 +3,8 @@ from datetime import datetime
 import pandas as pd
 import ccxt
 from typing import Optional
-from .base import Client
+
+from .client import Client
 
 
 class BinanceClient(Client):
