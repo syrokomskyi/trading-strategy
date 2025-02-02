@@ -2,7 +2,7 @@ import click
 from datetime import datetime
 from typing import Optional
 
-from ..data.fetcher import DataFetcher
+from ..data.fetcher import Fetcher
 from ..strategy.ichimoku import IchimokuStrategy
 
 
@@ -35,7 +35,7 @@ def optimize_ichimoku(
     displacement_periods = range(20, 45 + 5, 5)
 
     # Initialize data fetcher
-    fetcher = DataFetcher()
+    fetcher = Fetcher()
 
     # Fetch historical data
     data = fetcher.fetch_ohlcv(

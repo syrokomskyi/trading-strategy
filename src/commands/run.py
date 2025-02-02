@@ -29,11 +29,9 @@ from ..strategy.ichimoku import IchimokuStrategy
 @click.option(
     "--end-date", type=click.DateTime(), help="End date for backtesting (YYYY-MM-DD)"
 )
-
 # Bollinger Bands specific options
 @click.option("--bb-period", type=int, default=20, help="Bollinger Bands period")
 @click.option("--bb-std", type=float, default=2.0, help="Number of standard deviations")
-
 # MA Crossover and MACD specific options
 @click.option(
     "--fast-period", type=int, default=12, help="Fast EMA period for MACD/MA-Cross"
@@ -44,14 +42,12 @@ from ..strategy.ichimoku import IchimokuStrategy
 @click.option(
     "--signal-period", type=int, default=9, help="Signal line period for MACD"
 )
-
 # RSI specific options
 @click.option("--rsi-period", type=int, default=14, help="RSI calculation period")
 @click.option(
     "--rsi-overbought", type=float, default=70, help="RSI overbought threshold"
 )
 @click.option("--rsi-oversold", type=float, default=30, help="RSI oversold threshold")
-
 # Ichimoku specific options
 @click.option("--tenkan-period", type=int, default=9, help="Tenkan-sen period")
 @click.option("--kijun-period", type=int, default=26, help="Kijun-sen period")
@@ -79,25 +75,24 @@ def run(
     displacement: int,
 ):
     """Test a trading strategy with historical data"""
+    # Initialize data fetcher
+    fetcher = Fetcher()
 
     # Fetch historical data
-    fetcher = Fetcher()
     data = fetcher.fetch_ohlcv(
         symbol=symbol, timeframe=timeframe, start_date=start_date, end_date=end_date
     )
 
     # Initialize strategy
     if strategy == "bb":
-        st = BollingerBandsStrategy(
-            data=data,
+        s = BollingerBandsStrategy(
             symbol=symbol,
             timeframe=timeframe,
             period=bb_period,
             num_std=bb_std,
         )
     elif strategy == "ichimoku":
-        st = IchimokuStrategy(
-            data=data,
+        s = IchimokuStrategy(
             symbol=symbol,
             timeframe=timeframe,
             tenkan_period=tenkan_period,
@@ -106,42 +101,40 @@ def run(
             displacement=displacement,
         )
     elif strategy == "ma-cross":
-        st = MovingAverageCrossStrategy(
-            data=data,
+        s = MovingAverageCrossStrategy(
             symbol=symbol,
             timeframe=timeframe,
             fast_period=fast_period,
             slow_period=slow_period,
         )
     elif strategy == "macd":
-        st = MACDStrategy(
-            data=data,
+        s = MACDStrategy(
             symbol=symbol,
             timeframe=timeframe,
             fast_period=fast_period,
             slow_period=slow_period,
             signal_period=signal_period,
         )
-    elif strategy == "rsi":
-        st = RSIStrategy(
-            data=data,
+    else:
+        s = RSIStrategy(
             symbol=symbol,
             timeframe=timeframe,
             period=rsi_period,
             overbought=rsi_overbought,
             oversold=rsi_oversold,
         )
-    else:
-        raise ValueError(f"Unknown strategy '{strategy}'.")
 
-    metrics = st.get_performance_metrics()
+    # Set data and generate signals
+    s.set_data(data)
+    signals = s.generate_signals()
+    metrics = s.get_performance_metrics()
 
     # Print results
     click.echo(f"\nStrategy: {strategy.upper()}")
     click.echo(f"Symbol: {symbol}")
     click.echo(f"Timeframe: {timeframe}")
-    click.echo(f"Count signals: {metrics['count_signals']}")
-    click.echo("\nPerformance metrics")
+    click.echo(f"\nSignals:\n{signals}")
+    click.echo("\nPerformance metrics:")
     click.echo(f"Total profit: {metrics['total_profit']:.2%}")
     click.echo(
         f"Profitable / Total trades: {metrics['profitable_trades']} / {metrics['total_trades']}"

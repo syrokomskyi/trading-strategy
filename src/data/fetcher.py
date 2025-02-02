@@ -8,7 +8,7 @@ from pathlib import Path
 from slugify import slugify
 
 
-class DataFetcher:
+class Fetcher:
     def __init__(self, exchange_id: str = "binance", cache_dir: str = ".cache"):
         self.exchange = getattr(ccxt, exchange_id)()
         # Increase timeout values
