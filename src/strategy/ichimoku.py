@@ -26,7 +26,6 @@ class IchimokuStrategy(Strategy):
     Displacement:
     Default: 26 periods
     Common Range: 20-45 periods
-
     This is typically set equal to the Kijun-sen period,
     but can be adjusted based on the timeframe.
     """
