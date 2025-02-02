@@ -105,8 +105,9 @@ class Fetcher:
         keys = [
             symbol,
             timeframe,
-            start_date.strftime("%Y%m%d") if start_date else "none",
-            end_date.strftime("%Y%m%d") if end_date else "none",
+            # ! Keeps the cache by hours.
+            start_date.strftime("%Y%m%d%H") if start_date else "none",
+            end_date.strftime("%Y%m%d%H") if end_date else "none",
         ]
         return slugify("-".join(keys), separator="_")
 
