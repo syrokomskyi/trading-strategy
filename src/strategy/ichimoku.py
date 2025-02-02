@@ -4,6 +4,33 @@ from .base import Strategy
 
 
 class IchimokuStrategy(Strategy):
+    """
+    Tenkan-sen (Conversion Line):
+    Default: 9 periods
+    Common Range: 7-30 periods
+    For more volatile markets: shorter periods (5-15)
+    For less volatile markets: longer periods (20-30)
+
+    Kijun-sen (Base Line):
+    Default: 26 periods
+    Common Range: 20-60 periods
+    For more volatile markets: shorter periods (20-40)
+    For less volatile markets: longer periods (40-60)
+
+    Senkou Span B (Leading Span B):
+    Default: 52 periods
+    Common Range: 40-120 periods
+    For more volatile markets: shorter periods (40-80)
+    For less volatile markets: longer periods (80-120)
+
+    Displacement:
+    Default: 26 periods
+    Common Range: 20-45 periods
+
+    This is typically set equal to the Kijun-sen period,
+    but can be adjusted based on the timeframe.
+    """
+
     def __init__(
         self,
         symbol: str,
