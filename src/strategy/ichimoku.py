@@ -37,13 +37,13 @@ class IchimokuStrategy(Strategy):
         timeframe: str,
         tenkan_period: int = 9,
         kijun_period: int = 26,
-        senkou_b_period: int = 52,
+        senkou_span_b_period: int = 52,
         displacement: int = 26,
     ):
         super().__init__(symbol, timeframe)
         self.tenkan_period = tenkan_period
         self.kijun_period = kijun_period
-        self.senkou_b_period = senkou_b_period
+        self.senkou_span_b_period = senkou_span_b_period
         self.displacement = displacement
 
     def generate_signals(self) -> pd.DataFrame:
@@ -56,7 +56,7 @@ class IchimokuStrategy(Strategy):
             low=self.data["low"],
             window1=self.tenkan_period,
             window2=self.kijun_period,
-            window3=self.senkou_b_period,
+            window3=self.senkou_span_b_period,
         )
 
         tenkan_sen = ichimoku.ichimoku_conversion_line()

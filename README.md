@@ -57,7 +57,7 @@ trading-strategy run --strategy bb --symbol BTC/USDT --timeframe 1h --bb-period 
 ##### Ichimoku strategy
 
 ```bash
-trading-strategy run --strategy ichimoku --symbol BTC/USDT --timeframe 4h --tenkan-period 9 --kijun-period 26 --senkou-b-period 52 --displacement 26
+trading-strategy run --strategy ichimoku --symbol BTC/USDT --timeframe 4h --tenkan-period 9 --kijun-period 26 --senkou-span-b-period 52 --displacement 26
 ```
 
 ##### MACD strategy
@@ -105,7 +105,7 @@ Strategy-specific options:
 
   - `--tenkan-period`: Period for Tenkan-sen (Conversion Line) calculation (default: 9)
   - `--kijun-period`: Period for Kijun-sen (Base Line) calculation (default: 26)
-  - `--senkou-b-period`: Period for Senkou Span B calculation (default: 52)
+  - `--senkou-span-b-period`: Period for Senkou Span B calculation (default: 52)
   - `--displacement`: Displacement period for Chikou Span and Kumo (default: 26)
 
 - MA Crossover:

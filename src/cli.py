@@ -62,7 +62,9 @@ def cli():
 # Ichimoku specific options
 @click.option("--tenkan-period", type=int, default=9, help="Tenkan-sen period")
 @click.option("--kijun-period", type=int, default=26, help="Kijun-sen period")
-@click.option("--senkou-b-period", type=int, default=52, help="Senkou Span B period")
+@click.option(
+    "--senkou-span-b-period", type=int, default=52, help="Senkou Span B period"
+)
 @click.option("--displacement", type=int, default=26, help="Displacement period")
 def run(
     strategy: str,
@@ -80,7 +82,7 @@ def run(
     rsi_oversold: float,
     tenkan_period: int,
     kijun_period: int,
-    senkou_b_period: int,
+    senkou_span_b_period: int,
     displacement: int,
 ):
     """Test a trading strategy with historical data"""
@@ -122,7 +124,7 @@ def run(
             timeframe=timeframe,
             tenkan_period=tenkan_period,
             kijun_period=kijun_period,
-            senkou_b_period=senkou_b_period,
+            senkou_span_b_period=senkou_span_b_period,
             displacement=displacement,
         )
     else:
@@ -178,7 +180,7 @@ def optimize_ichimoku(
     # Parameter ranges to test
     tenkan_periods = range(7, 12)  # Default is 9
     kijun_periods = range(22, 30)  # Default is 26
-    senkou_b_periods = range(48, 56)  # Default is 52
+    senkou_span_b_periods = range(48, 56)  # Default is 52
 
     # Initialize data fetcher
     fetcher = DataFetcher()
@@ -192,7 +194,7 @@ def optimize_ichimoku(
     best_params = None
 
     total_combinations = (
-        len(tenkan_periods) * len(kijun_periods) * len(senkou_b_periods)
+        len(tenkan_periods) * len(kijun_periods) * len(senkou_span_b_periods)
     )
     with click.progressbar(
         length=total_combinations, label="Testing combinations"
@@ -200,9 +202,9 @@ def optimize_ichimoku(
         # Grid search through parameter combinations
         for tenkan in tenkan_periods:
             for kijun in kijun_periods:
-                for senkou_b in senkou_b_periods:
+                for senkou_span_b in senkou_span_b_periods:
                     # Skip invalid combinations where periods overlap incorrectly
-                    if tenkan >= kijun or kijun >= senkou_b:
+                    if tenkan >= kijun or kijun >= senkou_span_b:
                         bar.update(1)
                         continue
 
@@ -212,7 +214,7 @@ def optimize_ichimoku(
                         timeframe=timeframe,
                         tenkan_period=tenkan,
                         kijun_period=kijun,
-                        senkou_b_period=senkou_b,
+                        senkou_span_b_period=senkou_span_b,
                     )
                     strategy.set_data(data)
 
@@ -226,7 +228,7 @@ def optimize_ichimoku(
                         best_params = {
                             "tenkan_period": tenkan,
                             "kijun_period": kijun,
-                            "senkou_b_period": senkou_b,
+                            "senkou_span_b_period": senkou_span_b,
                         }
 
                     bar.update(1)
@@ -235,7 +237,7 @@ def optimize_ichimoku(
     click.echo("\nBest parameters found:")
     click.echo(f"Tenkan period: {best_params['tenkan_period']}")
     click.echo(f"Kijun period: {best_params['kijun_period']}")
-    click.echo(f"Senkou B period: {best_params['senkou_b_period']}")
+    click.echo(f"Senkou Span B period: {best_params['senkou_span_b_period']}")
     click.echo(f"Total profit: {best_profit:.4f}")
 
 
