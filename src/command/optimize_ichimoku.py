@@ -5,7 +5,7 @@ from concurrent.futures import ProcessPoolExecutor
 import itertools
 from tqdm import tqdm
 
-from ..fetcher.ccxt import CcxtClient
+from ..client.ccxt import CcxtClient
 from ..strategy.ichimoku import IchimokuStrategy
 
 

@@ -4,10 +4,8 @@ import click
 from datetime import datetime
 from typing import Optional
 
-from src.fetcher.binance import BinanceClient
-
-from ..fetcher.binance import BinanceClient
-from ..fetcher.ccxt import CcxtClient
+from ..client.binance import BinanceClient
+from ..client.ccxt import CcxtClient
 from ..strategy.factory import StrategyFactory
 
 load_dotenv()
@@ -84,12 +82,12 @@ def run(
     """Test a trading strategy with historical data"""
 
     # Fetch historical data
-    # client = CcxtClient()
-    client = BinanceClient(
-        api_key=os.getenv("BINANCE_API_KEY"),
-        api_secret=os.getenv("BINANCE_API_SECRET"),
-    )
-    print(client.fetch_balance())
+    client = CcxtClient()
+    # client = BinanceClient(
+    #     api_key=os.getenv("BINANCE_API_KEY"),
+    #     api_secret=os.getenv("BINANCE_API_SECRET"),
+    # )
+    # print(client.fetch_balance())
     data = client.fetch_retry(
         symbol=symbol, timeframe=timeframe, start_date=start_date, end_date=end_date
     )
