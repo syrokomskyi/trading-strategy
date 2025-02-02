@@ -38,24 +38,52 @@ Test trading strategies using the CLI:
 
 ### Basic usage
 
+We use a historical data feed to test the strategies.
+
+#### Run a strategy
+
+##### MA Crossover strategy
+
 ```bash
-# Test MA Crossover strategy
 trading-strategy run --strategy ma-cross --symbol BTC/USDT --timeframe 1h
+```
 
-# Bollinger Bands strategy
+##### Bollinger Bands strategy
+
+```bash
 trading-strategy run --strategy bb --symbol BTC/USDT --timeframe 1h --bb-period 20 --bb-std 2.0
+```
 
-# Ichimoku strategy
+##### Ichimoku strategy
+
+```bash
 trading-strategy run --strategy ichimoku --symbol BTC/USDT --timeframe 4h --tenkan-period 9 --kijun-period 26 --senkou-b-period 52 --displacement 26
+```
 
-# MACD strategy
+##### MACD strategy
+
+```bash
 trading-strategy run --strategy macd --symbol BTC/USDT --timeframe 4h --fast-period 12 --slow-period 26 --signal-period 9
+```
 
-# RSI strategy with custom parameters
+##### RSI strategy with custom parameters
+
+```bash
 trading-strategy run --strategy rsi --symbol ETH/USDT --timeframe 4h --rsi-period 14 --rsi-overbought 70 --rsi-oversold 30
+```
 
-# Backtest with specific date range
+##### Backtest with specific date range
+
+```bash
 trading-strategy run --strategy ma-cross --symbol BTC/USDT --timeframe 1d --start-date 2023-01-01 --end-date 2100-12-31
+```
+
+#### Optimize a strategy
+
+##### Optimize Ichimoku strategy parameters
+
+```bash
+trading-strategy optimize-ichimoku --symbol BTC/USDT --timeframe 1d --start-date 2023-01-01 --end-date 2024-01-01
 ```
 
 ### Available options
@@ -97,6 +125,18 @@ Strategy-specific options:
   - `--rsi-overbought`: Overbought threshold (default: 70)
   - `--rsi-oversold`: Oversold threshold (default: 30)
 
+## Available Commands
+
+- `run`: Test a trading strategy with specified parameters
+
+- `optimize-ichimoku`: Find optimal parameters for the Ichimoku strategy using grid search
+  - Required options:
+    - `--symbol`: Trading pair (e.g., BTC/USDT)
+    - `--timeframe`: Candle timeframe (1m, 5m, 15m, 1h, 4h, 1d)
+  - Optional options:
+    - `--start-date`: Start date for optimization (YYYY-MM-DD)
+    - `--end-date`: End date for optimization (YYYY-MM-DD)
+
 ## Implemented Strategies
 
 ### Bollinger Bands
@@ -105,6 +145,13 @@ This strategy uses Bollinger Bands to identify overbought and oversold condition
 
 - Buy when price crosses below the lower band (oversold)
 - Sell when price crosses above the upper band (overbought)
+
+### Ichimoku Cloud
+
+This strategy uses the Ichimoku Cloud system to identify trend direction and support/resistance levels:
+
+- Buy when price is above the cloud and Tenkan-sen is above Kijun-sen
+- Sell when price is below the cloud and Tenkan-sen is below Kijun-sen
 
 ### Moving Average Crossover
 
@@ -134,13 +181,6 @@ The MACD is calculated using three moving averages:
 - Signal line (default: 9 periods)
 
 This strategy is particularly effective for identifying trend changes and momentum shifts in the market.
-
-### Ichimoku Cloud
-
-This strategy uses the Ichimoku Cloud system to identify trend direction and support/resistance levels:
-
-- Buy when price is above the cloud and Tenkan-sen is above Kijun-sen
-- Sell when price is below the cloud and Tenkan-sen is below Kijun-sen
 
 ## Contributing
 
