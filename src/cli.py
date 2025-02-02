@@ -3,6 +3,8 @@ from datetime import datetime
 from typing import Optional
 
 from .data.fetcher import DataFetcher
+
+from .strategy.bollinger import BollingerBandsStrategy
 from .strategy.ma_cross import MovingAverageCrossStrategy
 from .strategy.rsi import RSIStrategy
 
@@ -16,7 +18,7 @@ def cli():
 @cli.command()
 @click.option(
     "--strategy",
-    type=click.Choice(["ma-cross", "rsi"]),
+    type=click.Choice(["bb", "ma-cross", "rsi"]),
     required=True,
     help="Trading strategy to test",
 )
@@ -32,9 +34,15 @@ def cli():
 @click.option(
     "--end-date", type=click.DateTime(), help="End date for backtesting (YYYY-MM-DD)"
 )
+
+# Bollinger Bands specific options
+@click.option("--bb-period", type=int, default=20, help="Bollinger Bands period")
+@click.option("--bb-std", type=float, default=2.0, help="Number of standard deviations")
+
 # MA Crossover specific options
 @click.option("--fast-period", type=int, default=10, help="Fast moving average period")
 @click.option("--slow-period", type=int, default=20, help="Slow moving average period")
+
 # RSI specific options
 @click.option("--rsi-period", type=int, default=14, help="RSI calculation period")
 @click.option(
@@ -52,6 +60,8 @@ def run(
     rsi_period: int,
     rsi_overbought: float,
     rsi_oversold: float,
+    bb_period: int,
+    bb_std: float,
 ):
     """Test a trading strategy with historical data"""
 
@@ -64,14 +74,21 @@ def run(
     )
 
     # Initialize strategy
-    if strategy == "ma-cross":
+    if strategy == "bb":
+        s = BollingerBandsStrategy(
+            symbol=symbol,
+            timeframe=timeframe,
+            period=bb_period,
+            num_std=bb_std,
+        )
+    elif strategy == "ma-cross":
         s = MovingAverageCrossStrategy(
             symbol=symbol,
             timeframe=timeframe,
             fast_period=fast_period,
             slow_period=slow_period,
         )
-    else:  # RSI strategy
+    else:
         s = RSIStrategy(
             symbol=symbol,
             timeframe=timeframe,
