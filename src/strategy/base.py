@@ -25,6 +25,7 @@ class Strategy(ABC):
         win_rate = profitable_trades / total_trades if total_trades > 0 else 0
         total_profit = signals["profit"].sum()
         max_drawdown = self._calculate_max_drawdown(signals)
+        count_signals = len(signals)
 
         return {
             "total_trades": total_trades,
@@ -32,6 +33,7 @@ class Strategy(ABC):
             "win_rate": win_rate,
             "total_profit": total_profit,
             "max_drawdown": max_drawdown,
+            "count_signals": count_signals,
         }
 
     def _calculate_max_drawdown(self, signals: pd.DataFrame) -> float:
