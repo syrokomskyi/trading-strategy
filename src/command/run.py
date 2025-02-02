@@ -2,7 +2,7 @@ import click
 from datetime import datetime
 from typing import Optional
 
-from ..data.fetcher import Fetcher
+from ..fetcher.fetcher import Fetcher
 from ..strategy.bollinger import BollingerBandsStrategy
 from ..strategy.ma_cross import MovingAverageCrossStrategy
 from ..strategy.rsi import RSIStrategy

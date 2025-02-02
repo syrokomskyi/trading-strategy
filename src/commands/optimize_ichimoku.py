@@ -4,7 +4,7 @@ from typing import Optional
 import itertools
 from tqdm import tqdm
 
-from ..data.fetcher import Fetcher
+from ..fetcher.fetcher import Fetcher
 from ..strategy.ichimoku import IchimokuStrategy
 
 
