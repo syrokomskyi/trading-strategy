@@ -43,15 +43,8 @@ load_dotenv()
     "--slow-period", type=int, default=26, help="Slow EMA period for MACD/MA-Cross"
 )
 @click.option(
-    "--signal-period", type=int, default=9, help="Signal line period for MACD"
+    "--signal-period", type=int, default=9, help="Signal line period for MACD/MA-Cross"
 )
-
-# RSI specific options
-@click.option("--rsi-period", type=int, default=14, help="RSI calculation period")
-@click.option(
-    "--rsi-overbought", type=float, default=70, help="RSI overbought threshold"
-)
-@click.option("--rsi-oversold", type=float, default=30, help="RSI oversold threshold")
 
 # Ichimoku specific options
 @click.option("--tenkan-period", type=int, default=9, help="Tenkan-sen period")
@@ -60,6 +53,13 @@ load_dotenv()
     "--senkou-span-b-period", type=int, default=52, help="Senkou Span B period"
 )
 @click.option("--displacement", type=int, default=26, help="Displacement period")
+
+# RSI specific options
+@click.option("--rsi-period", type=int, default=14, help="RSI calculation period")
+@click.option(
+    "--rsi-overbought", type=float, default=70, help="RSI overbought threshold"
+)
+@click.option("--rsi-oversold", type=float, default=30, help="RSI oversold threshold")
 def run(
     strategy: str,
     symbol: str,
