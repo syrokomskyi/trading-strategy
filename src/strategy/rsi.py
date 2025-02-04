@@ -4,7 +4,7 @@ from ta.momentum import RSIIndicator
 from .strategy import Strategy
 
 
-class RSIStrategy(Strategy):
+class Rsi(Strategy):
     def __init__(
         self,
         data: pd.DataFrame,

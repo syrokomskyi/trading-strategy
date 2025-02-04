@@ -1,11 +1,11 @@
 from typing_extensions import Literal
 import pandas as pd
 
-from src.strategy.bollinger import BollingerBandsStrategy
-from src.strategy.ichimoku import IchimokuStrategy
-from src.strategy.ma_cross import MovingAverageCrossStrategy
-from src.strategy.macd import MACDStrategy
-from src.strategy.rsi import RSIStrategy
+from src.strategy.bollinger import Bollinger
+from src.strategy.ichimoku import Ichimoku
+from src.strategy.ma_cross import MaCross
+from src.strategy.macd import Macd
+from src.strategy.rsi import Rsi
 
 
 StrategyType = Literal["bb", "ichimoku", "ma-cross", "macd", "rsi"]
@@ -36,7 +36,7 @@ class StrategyFactory:
         displacement: int,
     ):
         if strategy == "bb":
-            return BollingerBandsStrategy(
+            return Bollinger(
                 data=data,
                 symbol=symbol,
                 timeframe=timeframe,
@@ -45,7 +45,7 @@ class StrategyFactory:
             )
 
         if strategy == "ichimoku":
-            return IchimokuStrategy(
+            return Ichimoku(
                 data=data,
                 symbol=symbol,
                 timeframe=timeframe,
@@ -56,7 +56,7 @@ class StrategyFactory:
             )
 
         if strategy == "ma-cross":
-            return MovingAverageCrossStrategy(
+            return MaCross(
                 data=data,
                 symbol=symbol,
                 timeframe=timeframe,
@@ -65,7 +65,7 @@ class StrategyFactory:
             )
 
         if strategy == "macd":
-            return MACDStrategy(
+            return Macd(
                 data=data,
                 symbol=symbol,
                 timeframe=timeframe,
@@ -75,7 +75,7 @@ class StrategyFactory:
             )
 
         if strategy == "rsi":
-            return RSIStrategy(
+            return Rsi(
                 data=data,
                 symbol=symbol,
                 timeframe=timeframe,

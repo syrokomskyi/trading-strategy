@@ -4,7 +4,7 @@ from ta.trend import IchimokuIndicator
 from .strategy import Strategy
 
 
-class IchimokuStrategy(Strategy):
+class Ichimoku(Strategy):
     """
     Tenkan-sen (Conversion Line):
     Default: 9 periods

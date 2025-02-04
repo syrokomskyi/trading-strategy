@@ -4,7 +4,7 @@ from ta.trend import SMAIndicator
 from .strategy import Strategy
 
 
-class MovingAverageCrossStrategy(Strategy):
+class MaCross(Strategy):
     def __init__(
         self,
         data: pd.DataFrame,

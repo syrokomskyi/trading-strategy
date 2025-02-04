@@ -3,7 +3,7 @@ import pandas as pd
 from .strategy import Strategy
 
 
-class BollingerBandsStrategy(Strategy):
+class Bollinger(Strategy):
     """
     Bollinger Bands trading strategy.
     Generates signals based on price movements relative to the bands:

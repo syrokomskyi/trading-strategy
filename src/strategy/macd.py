@@ -4,7 +4,7 @@ from ta.trend import MACD
 from .strategy import Strategy
 
 
-class MACDStrategy(Strategy):
+class Macd(Strategy):
     def __init__(
         self,
         data: pd.DataFrame,

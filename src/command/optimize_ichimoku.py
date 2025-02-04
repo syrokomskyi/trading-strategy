@@ -6,7 +6,7 @@ import itertools
 from tqdm import tqdm
 
 from ..client.ccxt import CcxtClient
-from ..strategy.ichimoku import IchimokuStrategy
+from ..strategy.ichimoku import Ichimoku
 
 
 def test_parameter_combination(
@@ -32,7 +32,7 @@ def test_parameter_combination(
         return float("-inf"), params
 
     # Create and test strategy with current parameters
-    strategy = IchimokuStrategy(
+    strategy = Ichimoku(
         data=setup["data"],
         symbol=setup["symbol"],
         timeframe=setup["timeframe"],
