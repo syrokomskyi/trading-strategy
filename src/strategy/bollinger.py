@@ -16,8 +16,8 @@ class Bollinger(Strategy):
         data: pd.DataFrame,
         symbol: str,
         timeframe: str,
-        period: int = 20,
-        num_std: float = 2.0,
+        period: int,
+        num_std: float,
     ):
         """
         Initialize the strategy.
