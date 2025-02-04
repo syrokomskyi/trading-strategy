@@ -1,14 +1,14 @@
 from typing_extensions import Literal
 import pandas as pd
 
-from src.strategy.bollinger import Bollinger
+from src.strategy.bollinger_bands import BollingerBands
 from src.strategy.ichimoku import Ichimoku
 from src.strategy.ma_cross import MaCross
 from src.strategy.macd import Macd
 from src.strategy.rsi import Rsi
 
 
-StrategyType = Literal["bb", "ichimoku", "ma-cross", "macd", "rsi"]
+StrategyType = Literal["bollinger-bands", "ichimoku", "ma-cross", "macd", "rsi"]
 
 
 class StrategyFactory:
@@ -18,9 +18,9 @@ class StrategyFactory:
         data: pd.DataFrame,
         symbol: str,
         timeframe: str,
-        # bb
-        bb_period: int,
-        bb_std: float,
+        # bollinger-bands
+        bollinger_bands_period: int,
+        bollinger_bands_std: float,
         # ma-cross, macd
         fast_period: int,
         slow_period: int,
@@ -35,13 +35,13 @@ class StrategyFactory:
         senkou_span_b_period: int,
         displacement: int,
     ):
-        if strategy == "bb":
-            return Bollinger(
+        if strategy == "bollinger-bands":
+            return BollingerBands(
                 data=data,
                 symbol=symbol,
                 timeframe=timeframe,
-                period=bb_period,
-                num_std=bb_std,
+                period=bollinger_bands_period,
+                num_std=bollinger_bands_std,
             )
 
         if strategy == "ichimoku":

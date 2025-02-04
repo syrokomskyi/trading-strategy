@@ -14,7 +14,7 @@ load_dotenv()
 @click.command()
 @click.option(
     "--strategy",
-    type=click.Choice(["bb", "ma-cross", "rsi", "macd", "ichimoku"]),
+    type=click.Choice(["bollinger-bands", "ichimoku", "ma-cross", "rsi", "macd"]),
     required=True,
     help="Trading strategy to test",
 )
@@ -32,8 +32,15 @@ load_dotenv()
 )
 
 # Bollinger Bands specific options
-@click.option("--bb-period", type=int, default=20, help="Bollinger Bands period")
-@click.option("--bb-std", type=float, default=2.0, help="Number of standard deviations")
+@click.option(
+    "--bollinger-bands-period", type=int, default=20, help="Bollinger Bands period"
+)
+@click.option(
+    "--bollinger-bands-std",
+    type=float,
+    default=2.0,
+    help="Number of standard deviations",
+)
 
 # MA Crossover and MACD specific options
 @click.option(
@@ -66,8 +73,8 @@ def run(
     timeframe: str,
     start_date: Optional[datetime],
     end_date: Optional[datetime],
-    bb_period: int,
-    bb_std: float,
+    bollinger_bands_period: int,
+    bollinger_bands_std: float,
     fast_period: int,
     slow_period: int,
     signal_period: int,
@@ -98,8 +105,8 @@ def run(
         data=data,
         symbol=symbol,
         timeframe=timeframe,
-        bb_period=bb_period,
-        bb_std=bb_std,
+        bollinger_bands_period=bollinger_bands_period,
+        bollinger_bands_std=bollinger_bands_std,
         fast_period=fast_period,
         slow_period=slow_period,
         signal_period=signal_period,

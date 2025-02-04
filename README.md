@@ -55,7 +55,7 @@ trading-strategy run --strategy ma-cross --symbol BTC/USDT --timeframe 1h
 ##### Bollinger Bands strategy
 
 ```bash
-trading-strategy run --strategy bb --symbol BTC/USDT --timeframe 1h --bb-period 20 --bb-std 2.0
+trading-strategy run --strategy bollinger-bands --symbol BTC/USDT --timeframe 1h --bollinger-bands-period 20 --bollinger-bands-std 2.0
 ```
 
 ##### Ichimoku strategy
@@ -102,7 +102,7 @@ trading-strategy optimize-ichimoku --symbol BTC/USDT --timeframe 1d --start-date
 
 ### Available options
 
-- `--strategy`: Trading strategy to test (ma-cross, rsi, bb, macd, ichimoku)
+- `--strategy`: Trading strategy to test (bollinger-bands, ichimoku, ma-cross, macd, rsi)
 - `--symbol`: Trading pair (e.g., BTC/USDT, ETH/USDT)
 - `--timeframe`: Candle timeframe (1m, 5m, 15m, 1h, 4h, 1d)
 - `--start-date`: Start date for backtesting (YYYY-MM-DD)
@@ -112,8 +112,8 @@ Strategy-specific options:
 
 - Bollinger Bands:
 
-  - `--bb-period`: Period for moving average calculation (default: 20)
-  - `--bb-std`: Number of standard deviations for bands (default: 2.0)
+  - `--bollinger-bands-period`: Period for moving average calculation (default: 20)
+  - `--bollinger-bands-std`: Number of standard deviations for bands (default: 2.0)
 
 - Ichimoku Cloud:
 
