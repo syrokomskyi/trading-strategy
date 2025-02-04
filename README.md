@@ -17,6 +17,10 @@ A command-line tool for testing various cryptocurrency trading strategies using 
 - ⚙️ Configurable strategy parameters
 - 💾 Data caching for faster backtesting
 
+## Materials
+
+- [Every Trading Strategy Explained in 12 Minutes](https://youtu.be/ZX-Tp4zgJYc?si=-vBiA2AsucFx7-s3)
+
 ## Installation
 
 ### Clone the repository
