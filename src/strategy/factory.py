@@ -18,22 +18,22 @@ class StrategyFactory:
         data: pd.DataFrame,
         symbol: str,
         timeframe: str,
-        # bollinger-bands
+        # Bollinger Bands
         bollinger_bands_period: int,
         bollinger_bands_std: float,
-        # ma-cross, macd
+        # Ichimoku
+        ichimoku_tenkan_period: int,
+        ichimoku_kijun_period: int,
+        ichimoku_senkou_span_b_period: int,
+        ichimoku_displacement: int,
+        # MA-Cross, MACD
         fast_period: int,
         slow_period: int,
         signal_period: int,
-        # rsi
+        # RSI
         rsi_period: int,
         rsi_overbought: int,
         rsi_oversold: int,
-        # ichimoku
-        tenkan_period: int,
-        kijun_period: int,
-        senkou_span_b_period: int,
-        displacement: int,
     ):
         if strategy == "bollinger-bands":
             return BollingerBands(
@@ -49,10 +49,10 @@ class StrategyFactory:
                 data=data,
                 symbol=symbol,
                 timeframe=timeframe,
-                tenkan_period=tenkan_period,
-                kijun_period=kijun_period,
-                senkou_span_b_period=senkou_span_b_period,
-                displacement=displacement,
+                tenkan_period=ichimoku_tenkan_period,
+                kijun_period=ichimoku_kijun_period,
+                senkou_span_b_period=ichimoku_senkou_span_b_period,
+                displacement=ichimoku_displacement,
             )
 
         if strategy == "ma-cross":

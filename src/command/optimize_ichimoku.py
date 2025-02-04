@@ -17,7 +17,7 @@ def test_parameter_combination(
     tenkan = params["tenkan"]
     kijun = params["kijun"]
     senkou_span_b = params["senkou_span_b"]
-    displacement = params["displacement"]
+    ichimoku_displacement = params["ichimoku_displacement"]
 
     # Skip invalid combinations where periods overlap incorrectly
     if (
@@ -26,8 +26,9 @@ def test_parameter_combination(
         or tenkan < 5  # Too small for meaningful averages
         or kijun < 2 * tenkan  # Kijun should be notably larger than Tenkan
         or senkou_span_b < 2 * kijun  # Senkou B should be notably larger than Kijun
-        or displacement < kijun * 0.5  # Displacement shouldn't be too small
-        or displacement > kijun * 1.5  # or too large relative to Kijun
+        or ichimoku_displacement
+        < kijun * 0.5  # ichimoku_displacement shouldn't be too small
+        or ichimoku_displacement > kijun * 1.5  # or too large relative to Kijun
     ):
         return float("-inf"), params
 
@@ -39,7 +40,7 @@ def test_parameter_combination(
         tenkan_period=tenkan,
         kijun_period=kijun,
         senkou_span_b_period=senkou_span_b,
-        displacement=displacement,
+        displacement=ichimoku_displacement,
     )
 
     metrics = strategy.get_performance_metrics()
@@ -77,10 +78,10 @@ def optimize_ichimoku(
     click.echo("Starting Ichimoku Strategy optimization...")
 
     # Parameter ranges to test with steps to reduce iterations
-    tenkan_periods = range(5, 30 + 2, 2)
-    kijun_periods = range(20, 60 + 2, 2)
-    senkou_span_b_periods = range(40, 120 + 2, 2)
-    displacement_periods = range(20, 45 + 5, 5)
+    ichimoku_tenkan_periods = range(5, 30 + 2, 2)
+    ichimoku_kijun_periods = range(20, 60 + 2, 2)
+    ichimoku_senkou_span_b_periods = range(40, 120 + 2, 2)
+    ichimoku_displacement_periods = range(20, 45 + 5, 5)
 
     # Fetch historical data
     client = CcxtClient()
@@ -94,13 +95,13 @@ def optimize_ichimoku(
             "tenkan": t,
             "kijun": k,
             "senkou_span_b": s,
-            "displacement": d,
+            "ichimoku_displacement": d,
         }
         for t, k, s, d in itertools.product(
-            tenkan_periods,
-            kijun_periods,
-            senkou_span_b_periods,
-            displacement_periods,
+            ichimoku_tenkan_periods,
+            ichimoku_kijun_periods,
+            ichimoku_senkou_span_b_periods,
+            ichimoku_displacement_periods,
         )
     ]
 
@@ -142,4 +143,4 @@ def optimize_ichimoku(
     click.echo(f"  Tenkan period: {best_params['tenkan']}")
     click.echo(f"  Kijun period: {best_params['kijun']}")
     click.echo(f"  Senkou Span B period: {best_params['senkou_span_b']}")
-    click.echo(f"  Displacement: {best_params['displacement']}")
+    click.echo(f"  ichimoku_displacement: {best_params['ichimoku_displacement']}")

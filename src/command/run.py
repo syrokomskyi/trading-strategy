@@ -42,6 +42,16 @@ load_dotenv()
     help="Number of standard deviations",
 )
 
+# Ichimoku specific options
+@click.option("--ichimoku-tenkan-period", type=int, default=9, help="Tenkan-sen period")
+@click.option("--ichimoku-kijun-period", type=int, default=26, help="Kijun-sen period")
+@click.option(
+    "--ichimoku-senkou-span-b-period", type=int, default=52, help="Senkou Span B period"
+)
+@click.option(
+    "--ichimoku_displacement", type=int, default=26, help="Displacement period"
+)
+
 # MA Crossover and MACD specific options
 @click.option(
     "--fast-period", type=int, default=12, help="Fast EMA period for MACD/MA-Cross"
@@ -52,14 +62,6 @@ load_dotenv()
 @click.option(
     "--signal-period", type=int, default=9, help="Signal line period for MACD/MA-Cross"
 )
-
-# Ichimoku specific options
-@click.option("--tenkan-period", type=int, default=9, help="Tenkan-sen period")
-@click.option("--kijun-period", type=int, default=26, help="Kijun-sen period")
-@click.option(
-    "--senkou-span-b-period", type=int, default=52, help="Senkou Span B period"
-)
-@click.option("--displacement", type=int, default=26, help="Displacement period")
 
 # RSI specific options
 @click.option("--rsi-period", type=int, default=14, help="RSI calculation period")
@@ -81,10 +83,10 @@ def run(
     rsi_period: int,
     rsi_overbought: float,
     rsi_oversold: float,
-    tenkan_period: int,
-    kijun_period: int,
-    senkou_span_b_period: int,
-    displacement: int,
+    ichimoku_tenkan_period: int,
+    ichimoku_kijun_period: int,
+    ichimoku_senkou_span_b_period: int,
+    ichimoku_displacement: int,
 ):
     """Test a trading strategy with historical data"""
 
@@ -105,18 +107,22 @@ def run(
         data=data,
         symbol=symbol,
         timeframe=timeframe,
+        # Bollinger Bands
         bollinger_bands_period=bollinger_bands_period,
         bollinger_bands_std=bollinger_bands_std,
+        # Ichimoku
+        ichimoku_tenkan_period=ichimoku_tenkan_period,
+        ichimoku_kijun_period=ichimoku_kijun_period,
+        ichimoku_senkou_span_b_period=ichimoku_senkou_span_b_period,
+        ichimoku_displacement=ichimoku_displacement,
+        # MACD
         fast_period=fast_period,
         slow_period=slow_period,
         signal_period=signal_period,
+        # RSI
         rsi_period=rsi_period,
         rsi_overbought=rsi_overbought,
         rsi_oversold=rsi_oversold,
-        tenkan_period=tenkan_period,
-        kijun_period=kijun_period,
-        senkou_span_b_period=senkou_span_b_period,
-        displacement=displacement,
     )
 
     metrics = st.get_performance_metrics()

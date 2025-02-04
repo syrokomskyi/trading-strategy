@@ -21,7 +21,7 @@ class Ichimoku(Strategy):
     For more volatile markets: shorter periods (40-80)
     For less volatile markets: longer periods (80-120)
 
-    Displacement:
+    ichimoku_displacement:
     Common Range: 20-60 periods
     This is typically set equal to the Kijun-sen period,
     but can be adjusted based on the timeframe.
@@ -68,7 +68,7 @@ class Ichimoku(Strategy):
         # Trading Rules:
         # 1. Price above Kumo (Senkou Span A & B)
         # 2. Tenkan-sen crosses above Kijun-sen
-        # 3. Chikou Span above price from `kijun_period` ago
+        # 3. Chikou Span above price from `ichimoku_kijun_period` ago
 
         # Bullish conditions
         bullish = (
