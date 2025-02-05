@@ -152,8 +152,7 @@ def run(
 
     click.echo("\nPerformance metrics")
     click.echo(f"  Total profit: {metrics['total_profit']:.2%}")
-    click.echo(
-        f"  Profitable / Total trades: {metrics['profitable_trades']} / {metrics['total_trades']}"
-    )
-    click.echo(f"  Win rate: {metrics['win_rate']:.2%}")
     click.echo(f"  Max drawdown: {metrics['max_drawdown']:.2%}")
+    click.echo(f"  Total trades: {metrics['total_trades']}")
+    click.echo(f"  Profitable trades: {metrics['profitable_trades']}")
+    click.echo(f"  Win rate: {metrics['win_rate']:.2%}")
