@@ -26,10 +26,13 @@ class StrategyFactory:
         ichimoku_kijun_period: int,
         ichimoku_senkou_span_b_period: int,
         ichimoku_displacement: int,
-        # MA-Cross, MACD
-        fast_period: int,
-        slow_period: int,
-        signal_period: int,
+        # MA-Cross
+        ma_cross_fast_period: int,
+        ma_cross_slow_period: int,
+        # MACD
+        macd_fast_period: int,
+        macd_slow_period: int,
+        macd_signal_period: int,
         # RSI
         rsi_period: int,
         rsi_overbought: int,
@@ -60,8 +63,8 @@ class StrategyFactory:
                 data=data,
                 symbol=symbol,
                 timeframe=timeframe,
-                fast_period=fast_period,
-                slow_period=slow_period,
+                fast_period=ma_cross_fast_period,
+                slow_period=ma_cross_slow_period,
             )
 
         if strategy == "macd":
@@ -69,9 +72,9 @@ class StrategyFactory:
                 data=data,
                 symbol=symbol,
                 timeframe=timeframe,
-                fast_period=fast_period,
-                slow_period=slow_period,
-                signal_period=signal_period,
+                fast_period=macd_fast_period,
+                slow_period=macd_slow_period,
+                signal_period=macd_signal_period,
             )
 
         if strategy == "rsi":

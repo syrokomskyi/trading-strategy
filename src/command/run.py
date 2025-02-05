@@ -1,4 +1,3 @@
-import os
 from dotenv import load_dotenv
 import click
 from datetime import datetime
@@ -14,7 +13,7 @@ load_dotenv()
 @click.command()
 @click.option(
     "--strategy",
-    type=click.Choice(["bollinger-bands", "ichimoku", "ma-cross", "rsi", "macd"]),
+    type=click.Choice(["bollinger-bands", "ichimoku", "ma-cross", "macd", "rsi"]),
     required=True,
     help="Trading strategy to test",
 )
@@ -52,15 +51,23 @@ load_dotenv()
     "--ichimoku_displacement", type=int, default=26, help="Displacement period"
 )
 
-# MA Crossover and MACD specific options
+# MA Crossover specific options
 @click.option(
-    "--fast-period", type=int, default=12, help="Fast EMA period for MACD/MA-Cross"
+    "--ma-cross-fast-period", type=int, default=12, help="Fast EMA period for MA-Cross"
 )
 @click.option(
-    "--slow-period", type=int, default=26, help="Slow EMA period for MACD/MA-Cross"
+    "--ma-cross-slow-period", type=int, default=26, help="Slow EMA period for MA-Cross"
+)
+
+# MACD specific options
+@click.option(
+    "--macd-fast-period", type=int, default=12, help="Fast EMA period for MACD"
 )
 @click.option(
-    "--signal-period", type=int, default=9, help="Signal line period for MACD/MA-Cross"
+    "--macd-slow-period", type=int, default=26, help="Slow EMA period for MACD"
+)
+@click.option(
+    "--macd-signal-period", type=int, default=9, help="Signal line period for MACD"
 )
 
 # RSI specific options
@@ -75,14 +82,21 @@ def run(
     timeframe: str,
     start_date: Optional[datetime],
     end_date: Optional[datetime],
+    # Bollinger Bands
     bollinger_bands_period: int,
     bollinger_bands_std: float,
-    fast_period: int,
-    slow_period: int,
-    signal_period: int,
+    # MA Crossover
+    ma_cross_fast_period: int,
+    ma_cross_slow_period: int,
+    # MACD
+    macd_fast_period: int,
+    macd_slow_period: int,
+    macd_signal_period: int,
+    # RSI
     rsi_period: int,
     rsi_overbought: float,
     rsi_oversold: float,
+    # Ichimoku
     ichimoku_tenkan_period: int,
     ichimoku_kijun_period: int,
     ichimoku_senkou_span_b_period: int,
@@ -115,10 +129,13 @@ def run(
         ichimoku_kijun_period=ichimoku_kijun_period,
         ichimoku_senkou_span_b_period=ichimoku_senkou_span_b_period,
         ichimoku_displacement=ichimoku_displacement,
+        # MA-Cross
+        ma_cross_fast_period=ma_cross_fast_period,
+        ma_cross_slow_period=ma_cross_slow_period,
         # MACD
-        fast_period=fast_period,
-        slow_period=slow_period,
-        signal_period=signal_period,
+        macd_fast_period=macd_fast_period,
+        macd_slow_period=macd_slow_period,
+        macd_signal_period=macd_signal_period,
         # RSI
         rsi_period=rsi_period,
         rsi_overbought=rsi_overbought,

@@ -34,6 +34,8 @@ class Macd(Strategy):
         # Generate signals
         signals = pd.DataFrame(index=self.data.index)
         signals["price"] = self.data["close"]
+
+        # Hold
         signals["signal"] = 0
 
         # Buy signal when MACD line crosses above signal line
