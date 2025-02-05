@@ -35,18 +35,27 @@ class CcxtClient(Client):
     ) -> pd.DataFrame:
         """Fetch OHLCV data from the exchange"""
 
-        # Convert dates to timestamps
-        since = int(start_date.timestamp() * 1000) if start_date else None
-
-        ohlcv = self.exchange.fetch_ohlcv(
-            symbol,
-            timeframe,
-            since=since,
-            limit=1000,  # Adjust based on exchange limits
-        )
+        # Convert dates to timestamps in milliseconds
+        start_ts = int(start_date.timestamp() * 1000) if start_date else None
+        end_ts = int(end_date.timestamp() * 1000) if end_date else None
+        # We have a limit of 1000 klines per request
+        # Use pagination to fetch all data between startTime and endTime
+        klines = []
+        limit = 1000
+        while True:
+            fetched_klines = self.exchange.fetch_ohlcv(
+                symbol=symbol,
+                timeframe=timeframe,
+                since=start_ts,
+                limit=limit,
+            )
+            klines.extend(fetched_klines)
+            if len(fetched_klines) < limit:
+                break
+            start_ts = fetched_klines[-1][0]
 
         # Convert to DataFrame
         return pd.DataFrame(
-            ohlcv,
+            klines,
             columns=["timestamp", "open", "high", "low", "close", "volume"],
         )
