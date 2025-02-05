@@ -51,7 +51,9 @@ def test_parameter_combination(
 @click.command()
 @click.option("--symbol", required=True, help="Trading pair (e.g., BTC/USDT)")
 @click.option(
-    "--timeframe", required=True, help="Candle timeframe (1m, 5m, 15m, 1h, 4h, 1d)"
+    "--timeframe",
+    default="15m,1h,4h,1d",
+    help="Comma-separated list of timeframes to test (default: 15m,1h,4h,1d)",
 )
 @click.option(
     "--start-date",
@@ -74,8 +76,11 @@ def optimize_ichimoku(
     end_date: Optional[datetime],
     workers: Optional[int],
 ):
-    """Optimize Ichimoku Strategy parameters using parallel grid search."""
-    click.echo("Starting Ichimoku Strategy optimization...")
+    """Optimize Ichimoku Strategy parameters using parallel grid search across multiple timeframes."""
+
+    click.echo(f"Starting Ichimoku Strategy optimization for '{symbol}'...")
+
+    timeframe_list = [tf.strip() for tf in timeframe.split(",")]
 
     # Parameter ranges to test with steps to reduce iterations
     ichimoku_tenkan_periods = range(5, 30 + 2, 2)
@@ -83,64 +88,86 @@ def optimize_ichimoku(
     ichimoku_senkou_span_b_periods = range(40, 120 + 2, 2)
     ichimoku_displacement_periods = range(20, 45 + 5, 5)
 
-    # Fetch historical data
     client = CcxtClient()
-    data = client.fetch_retry(
-        symbol=symbol, timeframe=timeframe, start_date=start_date, end_date=end_date
-    )
 
-    # Create parameter combinations
-    param_combinations = [
-        {
-            "tenkan": t,
-            "kijun": k,
-            "senkou_span_b": s,
-            "ichimoku_displacement": d,
-        }
-        for t, k, s, d in itertools.product(
-            ichimoku_tenkan_periods,
-            ichimoku_kijun_periods,
-            ichimoku_senkou_span_b_periods,
-            ichimoku_displacement_periods,
+    best_overall_profit = float("-inf")
+    best_overall_params = None
+    best_overall_timeframe = None
+
+    for timeframe in timeframe_list:
+        click.echo(f"\nTesting timeframe {timeframe} for '{symbol}'...")
+
+        # Fetch historical data for current timeframe
+        data = client.fetch_retry(
+            symbol=symbol, timeframe=timeframe, start_date=start_date, end_date=end_date
         )
-    ]
 
-    # Setup data that will be shared across processes
-    setup_data = {
-        "data": data,
-        "symbol": symbol,
-        "timeframe": timeframe,
-    }
-
-    # Create argument tuples for the worker function
-    work_items = [(params, setup_data) for params in param_combinations]
-
-    best_profit = float("-inf")
-    best_params = None
-
-    # Use ProcessPoolExecutor for parallel execution
-    with ProcessPoolExecutor(max_workers=workers) as executor:
-        # Use tqdm for progress tracking
-        results = list(
-            tqdm(
-                executor.map(test_parameter_combination, work_items),
-                total=len(work_items),
-                desc="Testing combinations",
+        # Create parameter combinations
+        param_combinations = [
+            {
+                "tenkan": t,
+                "kijun": k,
+                "senkou_span_b": s,
+                "ichimoku_displacement": d,
+            }
+            for t, k, s, d in itertools.product(
+                ichimoku_tenkan_periods,
+                ichimoku_kijun_periods,
+                ichimoku_senkou_span_b_periods,
+                ichimoku_displacement_periods,
             )
-        )
+        ]
 
-        # Find the best result
-        for profit, params in results:
-            if profit > best_profit:
-                best_profit = profit
-                best_params = params
+        # Setup data that will be shared across processes
+        setup_data = {
+            "data": data,
+            "symbol": symbol,
+            "timeframe": timeframe,
+        }
 
-    click.echo("\nOptimization complete!")
+        # Create argument tuples for the worker function
+        work_items = [(params, setup_data) for params in param_combinations]
 
-    click.echo(f"\nTotal profit: {best_profit:.2%}")
+        best_profit = float("-inf")
+        best_params = None
 
-    click.echo("\nBest parameters found")
-    click.echo(f"  Tenkan period: {best_params['tenkan']}")
-    click.echo(f"  Kijun period: {best_params['kijun']}")
-    click.echo(f"  Senkou Span B period: {best_params['senkou_span_b']}")
-    click.echo(f"  ichimoku_displacement: {best_params['ichimoku_displacement']}")
+        # Use ProcessPoolExecutor for parallel execution
+        with ProcessPoolExecutor(max_workers=workers) as executor:
+            # Use tqdm for progress tracking
+            results = list(
+                tqdm(
+                    executor.map(test_parameter_combination, work_items),
+                    total=len(work_items),
+                    desc=f"Testing combinations for {timeframe} '{symbol}'",
+                )
+            )
+
+            # Find the best result for current timeframe
+            for profit, params in results:
+                if profit > best_profit:
+                    best_profit = profit
+                    best_params = params
+
+            # Update overall best if current timeframe performed better
+            if best_profit > best_overall_profit:
+                best_overall_profit = best_profit
+                best_overall_params = best_params
+                best_overall_timeframe = timeframe
+
+        click.echo(f"\nResults for {timeframe} '{symbol}':")
+        click.echo(f"  Best profit is {best_profit:.2%} with parameters:")
+        click.echo(f"    Tenkan period: {best_params['tenkan']}")
+        click.echo(f"    Kijun period: {best_params['kijun']}")
+        click.echo(f"    Senkou Span B period: {best_params['senkou_span_b']}")
+        click.echo(f"    Displacement: {best_params['ichimoku_displacement']}")
+
+    click.echo("\nOverall optimization complete!")
+
+    click.echo(
+        f"\nBest performing timeframe for '{symbol}' and this strategy is {best_overall_timeframe}"
+    )
+    click.echo(f"  Best overall profit is {best_overall_profit:.2%} with parameters:")
+    click.echo(f"    Tenkan period: {best_overall_params['tenkan']}")
+    click.echo(f"    Kijun period: {best_overall_params['kijun']}")
+    click.echo(f"    Senkou Span B period: {best_overall_params['senkou_span_b']}")
+    click.echo(f"    Displacement: {best_overall_params['ichimoku_displacement']}")
