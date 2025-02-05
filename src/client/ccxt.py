@@ -37,7 +37,7 @@ class CcxtClient(Client):
 
         # Convert dates to timestamps in milliseconds
         start_ts = int(start_date.timestamp() * 1000) if start_date else None
-        end_ts = int(end_date.timestamp() * 1000) if end_date else None
+
         # We have a limit of 1000 klines per request
         # Use pagination to fetch all data between startTime and endTime
         klines = []
