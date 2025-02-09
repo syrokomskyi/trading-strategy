@@ -7,15 +7,25 @@ A command-line tool for testing various cryptocurrency trading strategies using 
 - 📈 Multiple trading strategies support
 
   - Bollinger Bands Strategy
+
   - Ichimoku Strategy
+
   - MACD (Moving Average Convergence Divergence) Strategy
+    ![MACD (Moving Average Convergence Divergence) Strategy](image/strategy/macd-momentum-indicator.gif)
+
   - Moving Average Crossover Strategy
+    ![Moving Average Crossover Strategy](image/strategy/moving-average-momentum-indicator.gif)
+
   - RSI (Relative Strength Index) Strategy
+    ![RSI (Relative Strength Index) Strategy](image/strategy/rsi-oscillator.gif)
 
 - 💹 Real-time and historical data from multiple exchanges
 - 📊 Performance metrics calculation
 - ⚙️ Configurable strategy parameters
 - 💾 Data caching for faster backtesting
+
+Credits for video:
+[Every Trading Strategy Explained in 12 Minutes](https://youtu.be/ZX-Tp4zgJYc?si=-vBiA2AsucFx7-s3).
 
 ## Materials
 
